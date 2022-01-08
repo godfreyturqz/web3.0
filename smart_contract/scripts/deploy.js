@@ -19,3 +19,6 @@ const runMain = async () => {
 }
 
 runMain();
+
+// how to run
+// npx hardhat run scripts/deploy.js --network ropsten
