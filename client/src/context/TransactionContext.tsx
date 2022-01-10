@@ -3,18 +3,36 @@ import { ethers } from "ethers"
 import { contractABI, contractAddress } from "../utils/constants"
 
 
-type ContextType = {
-  transactionCount: string | null
-  connectWallet: () => void
-  transactions: never[]
-  currentAccount: string
-  isLoading: boolean
-  sendTransaction: () => void
-  handleChange: (e: ChangeEvent<HTMLInputElement>, name: string) => void
-  formData: { addressTo: string, amount: string, keyword: string, message: string }
+interface TransactionType {
+  addressTo: string
+  addressFrom: string
+  timestamp: string
+  message: string
+  keyword: string
+  amount: string
 }
 
-export const TransactionContext = createContext<ContextType | null>(null)
+type ContextType = {
+  currentAccount: string
+  connectWallet: () => void
+  handleChange: (e: ChangeEvent<HTMLInputElement>, name: string) => void
+  sendTransaction: () => void
+  formData: { addressTo: string, amount: string, keyword: string, message: string }
+  isLoading: boolean
+  transactionCount: string | null
+  transactions: TransactionType[]
+}
+
+export const TransactionContext = createContext<ContextType>({
+  currentAccount: '',
+  connectWallet: () => {},
+  handleChange: () => {},
+  sendTransaction: () => {},
+  formData: { addressTo: '', amount: '', keyword: '', message: '' },
+  isLoading: false,
+  transactionCount: '',
+  transactions: []
+})
 
 const { ethereum }: any = window
 
@@ -35,7 +53,7 @@ export const TransactionsProvider: React.FC<TransactionsProviderType> = ({ child
   const [currentAccount, setCurrentAccount] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [transactionCount, setTransactionCount] = useState(localStorage.getItem("transactionCount"))
-  const [transactions, setTransactions] = useState([])
+  const [transactions, setTransactions] = useState<TransactionType[]>([])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>, name: string) => {
     setformData((prevState) => ({ ...prevState, [name]: e.target.value }))
@@ -163,14 +181,14 @@ export const TransactionsProvider: React.FC<TransactionsProviderType> = ({ child
   return (
     <TransactionContext.Provider
       value={{
-        transactionCount,
-        connectWallet,
-        transactions,
         currentAccount,
-        isLoading,
-        sendTransaction,
+        connectWallet,
         handleChange,
+        sendTransaction,
         formData,
+        isLoading,
+        transactionCount,
+        transactions,
       }}
     >
       {children}
