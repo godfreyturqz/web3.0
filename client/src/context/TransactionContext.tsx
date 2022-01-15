@@ -12,7 +12,7 @@ interface TransactionType {
   amount: string
 }
 
-type ContextType = {
+interface ContextType {
   currentAccount: string
   connectWallet: () => void
   handleChange: (e: ChangeEvent<HTMLInputElement>, name: string) => void
@@ -66,7 +66,7 @@ export const TransactionsProvider: React.FC<TransactionsProviderType> = ({ child
 
         const availableTransactions = await transactionsContract.getAllTransactions()
 
-        const structuredTransactions = availableTransactions.map((transaction: any) => ({
+        const structuredTransactions = availableTransactions.map((transaction: ethers.Contract) => ({
           addressTo: transaction.receiver,
           addressFrom: transaction.sender,
           timestamp: new Date(transaction.timestamp.toNumber() * 1000).toLocaleString(),
