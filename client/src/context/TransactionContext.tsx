@@ -163,6 +163,8 @@ export const TransactionsProvider: React.FC<TransactionsProviderType> = ({ child
         const transactionsCount = await transactionsContract.getTransactionCount()
 
         setTransactionCount(transactionsCount.toNumber())
+
+        window.location.reload()
       } else {
         console.log("No ethereum object")
       }
